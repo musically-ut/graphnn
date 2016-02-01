@@ -15,6 +15,7 @@
 #include "classnll_criterion_layer.h"
 #include "err_cnt_criterion_layer.h"
 #include "batch_norm_param.h"
+#include "softmax_layer.h"
 
 typedef double Dtype;
 const MatMode mode = CPU;

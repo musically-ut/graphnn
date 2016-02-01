@@ -17,28 +17,44 @@
 #include "sin_layer.h"
 #include "cos_layer.h"
 #include "batch_norm_param.h"
+#include "softmax_layer.h"
 
-typedef double Dtype;
-const MatMode mode = CPU;
+typedef float Dtype;
 using namespace std;
+
+
+template<MatMode mode>
+void check(DenseMat<CPU, Dtype>& input, SparseMat<CPU, Dtype>& mask)
+{
+    DenseMat<mode, Dtype> a;
+    SparseMat<mode, Dtype> c;
+
+    a.CopyFrom(input);
+    c.CopyFrom(mask);
+
+    a.EleWiseMul(c);
+    a.Print2Screen();
+}
 
 int main()
 {
-	// GPUHandle::Init(0);
+	GPUHandle::Init(0);
 
-    cout << "Staring." << endl;
+    DenseMat<CPU, Dtype> input(3, 5);
+    SparseMat<CPU, Dtype> mask(3, 5);
+    mask.ResizeSp(4, 4);
 
-    DenseMat<mode, Dtype> a(1, 5);
+    mask.data->ptr[0] = 0; mask.data->ptr[1] = 2; mask.data->ptr[2] = 3; mask.data->ptr[3] = 4;
+    mask.data->col_idx[0] = 0; mask.data->col_idx[1] = 2; mask.data->col_idx[2] = 3; mask.data->col_idx[3] = 4;
+    for (int i = 0; i < 4; ++i)
+        mask.data->val[i] = 2.0;
 
-    cout << "Matrix a created." << endl;
+    input.Fill(1.0);
 
-    a.Fill(14);
 
-    cout << "a filled" << endl;
-    a.Print2Screen();
-    cudaMemset(a.data + 1, 0, 3 * sizeof(Dtype));
-    a.Print2Screen();
+    check<CPU>(input, mask);
+    //check<GPU>(input, deriv);
 
-	// GPUHandle::Destroy();
+	GPUHandle::Destroy();
 	return 0;
 }

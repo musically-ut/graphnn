@@ -3,6 +3,16 @@
 
 #include <mkl.h>
 
+inline float MKLHelper_Dot(const MKL_INT n, const float* x, const float* y)
+{
+    return cblas_sdot(n, x, 1, y, 1);
+}
+
+inline double MKLHelper_Dot(const MKL_INT n, const double* x, const double* y)
+{
+    return cblas_ddot(n, x, 1, y, 1);
+}
+
 inline CBLAS_INDEX MKLHelper_Amax(const MKL_INT n, const float *x)
 {
     return cblas_isamax(n, x, 1);
@@ -191,6 +201,16 @@ inline void MKLHelper_InvSqrt(const MKL_INT n, float* a, float* y)
 inline void MKLHelper_InvSqrt(const MKL_INT n, double* a, double* y)
 {
 	vdInvSqrt(n, a, y);
+}
+
+inline void MKLHelper_Inv(const MKL_INT n, float* a, float* y)
+{
+	vsInv(n, a, y);
+}
+
+inline void MKLHelper_Inv(const MKL_INT n, double* a, double* y)
+{
+	vdInv(n, a, y);
 }
 
 inline void MKLHelper_Square(const MKL_INT n, float* a, float* y)
